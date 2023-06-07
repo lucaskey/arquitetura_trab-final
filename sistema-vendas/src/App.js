@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import ClienteDao from './DAO/ClienteDao';
 import ProdutoDao from './DAO/ProdutoDao';
 import PedidoDao from './DAO/PedidoDao';
+import ItemPedidoDao from './DAO/ItemPedidoDao';
 
 const App = () => {
   return (
@@ -17,6 +18,9 @@ const App = () => {
           </Route>
           <Route path="/pedido">
             <PedidoDao />
+          </Route>
+          <Route path="/itempedido">
+            <ItemPedidoDao />
           </Route>
         </Switch>
       </div>
