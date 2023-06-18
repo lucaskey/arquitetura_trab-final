@@ -19,23 +19,8 @@ function App() {
   }, []);
 
   const handleCriarPedido = () => {
-    // Lógica para criar um novo pedido
-    // ...
-    // Faça uma solicitação POST ao servidor Express para criar o pedido
-    fetch('http://localhost:3001/pedidos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('Erro ao criar o pedido:', error);
-      });
+    // Emita um evento para criar um novo pedido
+    socket.emit('criarPedido');
   };
 
   return (
