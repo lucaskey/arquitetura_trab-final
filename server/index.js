@@ -17,12 +17,12 @@ const io = new Server(server, {
 const pedidos = [];
 
 io.on('connection', (socket) => {
-    console.log('Novo cliente conectado!');
   
     // Evento para criar um novo pedido
-    socket.on('criarPedido', () => {
+    socket.on('criarPedido', (data) => {
       // Lógica para criar um novo pedido e adicioná-lo à estrutura de dados dos pedidos
-      const novoPedido = { id: pedidos.length + 1, status: 'Em andamento' };
+      const novoPedido = { id: pedidos.length + 1, status: 'Em andamento', order: data };
+      console.log(novoPedido);
       pedidos.push(novoPedido);
   
       // Notifique todos os clientes conectados sobre a criação do novo pedido
