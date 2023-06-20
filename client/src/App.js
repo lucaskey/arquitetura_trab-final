@@ -1,7 +1,12 @@
 import "./App.css";
 import RadioButton from "./components/RadioButton";
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import { faLaptop, faShirt, faGamepad } from '@fortawesome/free-solid-svg-icons';
+import Card from "./components/Card";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import {
+  faLaptop,
+  faShirt,
+  faGamepad,
+} from "@fortawesome/free-solid-svg-icons";
 
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
@@ -9,40 +14,43 @@ const socket = io.connect("http://localhost:3001");
 
 function App() {
   const [pedidos, setPedidos] = useState([]);
-  const [selectedProductType, setSelectedProductType] = useState('');
+  const [selectedProductType, setSelectedProductType] = useState("");
   const [formulario, setFormulario] = useState({
-    usuario: '',
-    produto: '',
-    tipoProduto: '',
+    usuario: "",
+    produto: "",
+    tipoProduto: "",
   });
+
+
 
   const handleSelect = (value) => {
     setSelectedProductType(value);
+    handleChange({ target: { name: "tipoProduto", value: value } });
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log(selectedProductType)
+    console.log(selectedProductType);
     setFormulario((prevState) => ({
       ...prevState,
       tipoProduto: selectedProductType,
       [name]: value,
     }));
-
   };
 
   useEffect(() => {
-    socket.on('novoPedido', (novoPedido) => {
+    socket.on("novoPedido", (novoPedido) => {
       setPedidos((prevPedidos) => [...prevPedidos, novoPedido]);
+      alert(`Novo pedido ${novoPedido.id}: ${novoPedido.order.produto} lançado por ${novoPedido.order.usuario}`);
     });
 
     return () => {
-      socket.off('novoPedido');
+      socket.off("novoPedido");
     };
   }, []);
 
   const handleCriarPedido = () => {
-    socket.emit('criarPedido', formulario);
+    socket.emit("criarPedido", formulario);
   };
 
   return (
@@ -54,43 +62,64 @@ function App() {
               <h2 className="container-title">Cadastrar pedido</h2>
             </div>
             <div>
-              <input name="usuario" type="text" placeholder="Nome do usuário*" class="input" onChange={handleChange} />
+              <input
+                name="usuario"
+                type="text"
+                placeholder="Nome do usuário*"
+                class="input"
+                onChange={handleChange}
+              />
             </div>
             <div>
-              <input name="produto" type="text" placeholder="Produto*" class="input" onChange={handleChange} />
+              <input
+                name="produto"
+                type="text"
+                placeholder="Produto*"
+                class="input"
+                onChange={handleChange}
+              />
             </div>
             <label>Tipo de produto: </label>
             <div className="radio-group">
               <RadioButton
                 icon={faShirt}
                 selected={selectedProductType === "Roupas"}
-                onSelect={() => handleSelect('Roupas')}
+                onSelect={() => {
+                  handleSelect("Roupas");
+                }}
               />
               <RadioButton
                 icon={faLaptop}
-                selected={selectedProductType === 'Eletrônicos'}
-                onSelect={() => handleSelect('Eletrônicos')}
+                selected={selectedProductType === "Eletrônicos"}
+                onSelect={() => handleSelect("Eletrônicos")}
               />
               <RadioButton
                 icon={faGamepad}
-                selected={selectedProductType === 'Brinquedos'}
-                onSelect={() => handleSelect('Brinquedos')}
+                selected={selectedProductType === "Brinquedos"}
+                onSelect={() => handleSelect("Brinquedos")}
               />
             </div>
             <div>
-              <button className="btn" onClick={handleCriarPedido}>Criar pedido</button>
+              <button className="btn" onClick={handleCriarPedido}>
+                Criar pedido
+              </button>
             </div>
           </div>
         </div>
-        <div className="list-container">
-          <div>
-            <h2 className="container-title">Pedidos</h2>
-          </div>
-          <ul>
+        <div style={{ width: "100%" }}>
+          <div className="list-container">
             {pedidos.map((pedido) => (
-              <li key={pedido.id}>Pedido #{pedido.id} - Status: {pedido.status} - usuario: {pedido.usuario}</li>
+              <Card
+                tipoProduto={pedido.order.tipoProduto}
+                id={pedido.id}
+                date={pedido.date}
+                status={pedido.status}
+                key={pedido.id}
+                vendedor={pedido.order.usuario}
+                produto={pedido.order.produto}
+              />
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </div>
