@@ -8,30 +8,29 @@ const cors = require('cors');
 app.use(cors());
 
 const io = new Server(server, {
-    cors: {
-        origin: 'http://localhost:3000',
-        methods: ['GET', 'POST']
-    }
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
 })
 
 const pedidos = [];
 
 io.on('connection', (socket) => {
-  
-    // Evento para criar um novo pedido
-    socket.on('criarPedido', (data) => {
-      // Lógica para criar um novo pedido e adicioná-lo à estrutura de dados dos pedidos
-      const novoPedido = { id: pedidos.length + 1, status: 'Em andamento', order: data };
-      console.log(novoPedido);
-      pedidos.push(novoPedido);
-  
-      // Notifique todos os clientes conectados sobre a criação do novo pedido
-      io.emit('novoPedido', novoPedido);
-    });
+
+  socket.on('criarPedido', (data) => {
+
+    var date = new Date()
+    
+    const novoPedido = { id: pedidos.length + 1, status: 'Em andamento', date: date.toLocaleDateString('en-GB'), order: data };
+    pedidos.push(novoPedido);
+
+    io.emit('novoPedido', novoPedido);
   });
+});
 
 server.listen(3001, () => {
-    console.log('Servidor Socket.io está ouvindo na porta 3001...');
+  console.log('Servidor Socket.io está ouvindo na porta 3001...');
 });
 
 
