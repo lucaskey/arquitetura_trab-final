@@ -21,8 +21,6 @@ function App() {
     tipoProduto: "",
   });
 
-
-
   const handleSelect = (value) => {
     setSelectedProductType(value);
     handleChange({ target: { name: "tipoProduto", value: value } });
